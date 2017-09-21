@@ -10,7 +10,7 @@ class SearchBar extends React.Component {
         zDepth={1}
       >
         <SelectField
-          fullWidth={true}
+          fullWidth
           floatingLabelText={'Type'}
         >
           <MenuItem value={'IT'} primaryText={'IT'} />

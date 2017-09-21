@@ -6,7 +6,7 @@ import { Paper,
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
-  FloatingActionButton
+  FloatingActionButton,
 } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
@@ -15,11 +15,39 @@ class AssetsTable extends React.Component {
     super(props);
     this.state = {
       selectedRows: [],
+      containerStyle: props.styles.containerStyle,
     };
     this.handleSelectRows = this.handleSelectRows.bind(this);
   }
 
+  isSelected(index) {
+    return this.state.selectedRows.indexOf(index) !== -1;
+  }
+
+  getContainerStyle() {
+    if (this.props.selectedItems.length > 0) {
+      return {...this.props.styles.containerStyle, width: '200px'};
+    }
+    return this.props.styles.containerStyle;
+  }
+
   handleSelectRows(rows) {
+    if (rows === 'all') {
+      this.setState({
+        ...this.state,
+        selectedRows: this.props.items,
+      });
+      this.props.selectItems(this.props.items);
+      return;
+    }
+    if (rows === 'none') {
+      this.setState({
+        ...this.state,
+        selectedRows: [],
+      });
+      this.props.selectItems([]);
+      return;
+    }
     this.setState({
       ...this.state,
       selectedRows: rows,
@@ -29,18 +57,14 @@ class AssetsTable extends React.Component {
     }));
   }
 
-  isSelected(index) {
-    return this.state.selectedRows.indexOf(index) !== -1;
-  }
-
   render() {
     const { styles, items } = this.props;
     return (
       <Paper
-        style={styles.containerStyle}
+        style={this.getContainerStyle()}
         zDepth={1}
       >
-        <Table onRowSelection={this.handleSelectRows}>
+        <Table onRowSelection={this.handleSelectRows} multiSelectable>
           <TableHeader>
             <TableRow>
               <TableHeaderColumn>Name</TableHeaderColumn>
@@ -48,7 +72,7 @@ class AssetsTable extends React.Component {
               <TableHeaderColumn>Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody deselectOnClickaway={false}>
             {items.map((item, index) =>
               (<TableRow key={item.id} selected={this.isSelected(index)}>
                 <TableRowColumn>{item.name}</TableRowColumn>
@@ -70,15 +94,21 @@ AssetsTable.propTypes = {
   styles: React.PropTypes.object,
   items: React.PropTypes.array,
   selectItems: React.PropTypes.func.required,
+  selectedItems: React.PropTypes.array.required,
 };
 
 AssetsTable.defaultProps = {
   styles: {
     containerStyle: {
-      paddingLeft: '200px',
+      marginLeft: '200px',
+      position: 'fixed',
+      minHeight: 'calc(100% - 64px)',
+    },
+    containerCollapseStyle: {
+      width: '200px',
     },
     addButtonStyle: {
-      position: 'fixed',
+      position: 'absolute',
       bottom: '20px',
       right: '20px',
     },
