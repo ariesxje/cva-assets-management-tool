@@ -9,6 +9,7 @@ import { Paper,
   FloatingActionButton,
 } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import ActionNoteAdd from 'material-ui/svg-icons/action/note-add';
 
 class AssetsTable extends React.Component {
   constructor(props) {
@@ -82,9 +83,14 @@ class AssetsTable extends React.Component {
               ))}
           </TableBody>
         </Table>
-        <FloatingActionButton style={styles.addButtonStyle}>
-          <ContentAdd />
-        </FloatingActionButton>
+        <div style={styles.floatButtonsStyle}>
+          <FloatingActionButton style={{marginBottom: '15px'}} secondary disabled={this.props.selectedItems.length === 0}>
+            <ActionNoteAdd />
+          </FloatingActionButton>
+          <FloatingActionButton>
+            <ContentAdd />
+          </FloatingActionButton>
+        </div>
       </Paper>
     );
   }
@@ -107,10 +113,12 @@ AssetsTable.defaultProps = {
     containerCollapseStyle: {
       width: '200px',
     },
-    addButtonStyle: {
+    floatButtonsStyle: {
       position: 'absolute',
       bottom: '20px',
       right: '20px',
+      display: 'flex',
+      flexDirection: 'column',
     },
   },
   items: [
